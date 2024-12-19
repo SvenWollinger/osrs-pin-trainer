@@ -1,5 +1,5 @@
 function preload_image(url) {
-    var img=new Image();
+    const img = new Image();
     img.src=url;
     return img
 }

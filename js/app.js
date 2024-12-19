@@ -18,8 +18,8 @@ function shuffleButtons() {
 }
 shuffleButtons()
 
-function failsafe() {
-    if(state == State.SUCCESS || state == State.FAIL) {
+function checkSuccess() {
+    if(state === State.SUCCESS || state === State.FAIL) {
         state = State.DIGIT_1;
         pin_current = "";
         return true;
@@ -28,18 +28,18 @@ function failsafe() {
 }
 
 document.addEventListener("keydown", (event) => {
-    if(failsafe()) return;
+    if(checkSuccess()) return;
 
     let valid = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
     let active_tag = document.activeElement.tagName;
 
-    if(active_tag == "INPUT" || valid.indexOf(event.key) == -1) return;
+    if(active_tag === "INPUT" || valid.indexOf(event.key) === -1) return;
 
     press_button(event.key);
 });
 
 canvas.addEventListener('click', (event) => {
-    if(failsafe()) return;
+    if(checkSuccess()) return;
 
     let x = event.clientX - canvas.offsetLeft;
     let y = event.clientY - canvas.offsetTop;
@@ -84,15 +84,14 @@ let state = State.NO_CHARACTER;
 
 async function press_button(button) {
     pin_current += button;
-    if(state == State.DIGIT_1) {
+    if(state === State.DIGIT_1) {
         state = State.DIGIT_2;
-    } else if(state == State.DIGIT_2) {
+    } else if(state === State.DIGIT_2) {
         state = State.DIGIT_3;
-    } else if(state == State.DIGIT_3) {
+    } else if(state === State.DIGIT_3) {
         state = State.DIGIT_4;
-    } else if(state == State.DIGIT_4) {
+    } else if(state === State.DIGIT_4) {
         let hashed = await digest({message: pin_current});
-        console.log();
         if(hashed === pin) state = State.SUCCESS;
         else state = State.FAIL;
     }
@@ -112,6 +111,9 @@ document.getElementById("setup-bookmark-open").onclick = async () => {
     let character_pin = document.getElementById("setup-bookmark-pin").value;
 
     let current = new URL(window.location);
+    current.searchParams.delete("name");
+    current.searchParams.delete("pin");
+
     current.searchParams.append("name", character_name);
     current.searchParams.append("pin", await digest({message: character_pin}));
     window.open(current);
@@ -125,23 +127,26 @@ function drawLoop() {
         });
     }
 
-    ctx.font = "40px Runescape";
     ctx.fillStyle = "white";
     function drawStatusText(message) {
+        ctx.font = "40px Runescape";
         let measured = ctx.measureText(message);
         ctx.fillText(message, canvas.clientWidth / 2 - measured.width / 2, 100);
     }
 
     function drawTopLeftText(message) {
         ctx.font = "35px Runescape"
-        let measured = ctx.measureText(message);
         ctx.fillText(message, 15, 37);
     }
 
     drawStatusText(state.status_message);
 
     if(name != null && pin != null) {
-        drawTopLeftText(`Logged in as ${name}`)
+        if(name.length === 0) {
+            drawTopLeftText(`Logged in anonymously`);
+        } else {
+            drawTopLeftText(`Logged in as ${name}`);
+        }
     }
 
     requestAnimationFrame(drawLoop);
