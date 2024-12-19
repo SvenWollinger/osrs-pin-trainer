@@ -1,3 +1,8 @@
+//Enforce HTTPS (https://stackoverflow.com/a/4723302)
+if (location.protocol !== 'https:') {
+    location.replace(`https:${location.href.substring(location.protocol.length)}`);
+}
+
 let canvas = document.getElementById("pin-canvas");
 let ctx = canvas.getContext("2d");
 
