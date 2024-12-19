@@ -1,4 +1,9 @@
-MIT License
+### This license does not apply to the following content:
+#### Fonts: Fonts are taken from https://github.com/RuneStar/fonts.
+#### Images: Images have been captured and edited from osrs ingame.
+#### Hash Function: The hash function was taken from https://stackoverflow.com/a/63499899.
+
+# MIT License
 
 Copyright (c) 2024 SvenWollinger
 
