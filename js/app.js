@@ -1,5 +1,5 @@
 //Enforce HTTPS (https://stackoverflow.com/a/4723302)
-if (location.protocol !== 'https:') {
+if (location.protocol !== 'https:' && location.protocol !== 'file:') {
     location.replace(`https:${location.href.substring(location.protocol.length)}`);
 }
 
